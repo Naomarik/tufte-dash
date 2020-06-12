@@ -24,9 +24,13 @@
 
 (defstate http-server
   :start
-  (let [port (:port env)]
+  (let [{:keys [port build]} env]
     (println "Started on port " port)
-    (run-jetty app/handler {:port port}))
+    (if (= build :dev)
+      (do
+        (require '[ring.middleware.reload])
+        (run-jetty ((resolve 'ring.middleware.reload/wrap-reload) #'app/handler) {:port port}))
+      (run-jetty app/handler {:port port})))
   :stop
   (.stop http-server))
 

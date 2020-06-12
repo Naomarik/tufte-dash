@@ -2,7 +2,6 @@
   (:require
    [reitit.ring :as ring]
    [ring.util.response :as response]
-   ;; [ring.middleware.reload :refer [wrap-reload]]
    [reitit.coercion.spec]
    [reitit.ring.coercion :as rrc]
    [reitit.core :as r]
@@ -30,14 +29,6 @@
 ;;                                         ;        :path-params {:id 2},
 ;;                                         ;        :path "/api/orders/2"}
 
-;; (defn html-response
-;;   ""
-;;   [data]
-;;   (-> (response/response data)
-;;       (response/header "content-type" "text/html")
-;;       )
-;;   )
-
 (defn testz [request]
   (response/response
    (html
@@ -53,10 +44,17 @@
     [:pre
      (str request)]
     (include-js "/assets/test.js")
-    ;; (include-js (slurp (io/resource "test.js")))
+    [:div
+     (str (slurp (io/resource "test.js")))]
     [:h1 "twoST"])))
 
-(def -handler
+(defmethod response/resource-data :resource
+  [^java.net.URL url]
+  (let [conn (.openConnection url)]
+    {:content        (.getInputStream conn)
+     :content-length (let [len (.getContentLength conn)] (if-not (pos? len) len))}))
+
+(def handler
   (ring/ring-handler
    (ring/router
     [
@@ -71,6 +69,5 @@
                          rrc/coerce-response-middleware]}})))
 
 
-;; (def handler (wrap-reload #'-handler))
-(def handler -handler)
 ;; (def handler hello)
+

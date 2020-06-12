@@ -1,3 +1,4 @@
 (ns env)
 
-(def env {:port 6015})
+(def env {:build :dev
+          :port 6015})

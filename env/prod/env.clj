@@ -1,3 +1,4 @@
 (ns env)
 
-(def env {:port 6025})
+(def env {:build :prod
+          :port 6025})
