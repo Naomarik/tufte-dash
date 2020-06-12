@@ -1,0 +1,40 @@
+{:aliases {:dev {:extra-deps {cider/cider-nrepl {:mvn/version "0.25.2"}}
+                 :extra-paths ["env/dev"]
+                 :main-opts ["-m" "main"]}
+
+           :cider-clj {:extra-deps {cider/cider-nrepl {:mvn/version "0.25.2"}}
+                       :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
+
+           :cider-cljs {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.339"}
+                                     cider/cider-nrepl {:mvn/version "0.22.4"}
+                                     cider/piggieback {:mvn/version "0.5.0"}}
+                        :main-opts ["-m" "nrepl.cmdline" "--middleware"
+                                    "[cider.nrepl/cider-middleware,cider.piggieback/wrap-cljs-repl]"]}
+
+           :native-image
+           {:main-opts ["-m clj.native-image tuftedash.core"
+                        "--initialize-at-build-time"
+                        "--report-unsupported-elements-at-runtime"
+                        "-H:+ReportExceptionStackTraces"
+                        ;; "--no-fallback"
+                        ;; "--allow-incomplete-classpath"
+                        ;; "--no-server"
+                        ;; optional native image name override
+                        "-H:Name=core"]
+            :jvm-opts ["-Dclojure.compiler.direct-linking=true"]
+            :extra-paths ["env/prod"]
+            :extra-deps
+            {clj.native-image
+             {:git/url "https://github.com/taylorwood/clj.native-image.git"
+              :sha "7708e7fd4572459c81f6a6b8e44c96f41cdd92d4"}}}}
+
+ :paths ["src" "resources"]
+
+ :deps {org.clojure/tools.cli {:mvn/version "1.0.194"}
+        nrepl {:mvn/version "0.7.0"}
+        mount {:mvn/version "0.1.16"}
+        hiccup {:mvn/version "1.0.5"}
+        metosin/reitit {:mvn/version "0.5.2"}
+        ;; cider/cider-nrepl {:mvn/version "0.25.2"}
+        org.clojure/clojure {:mvn/version "1.10.2-alpha1"},
+        ring {:mvn/version "1.8.1"}}}

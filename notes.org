@@ -1,0 +1,58 @@
+* Compile sizes
+** Hello World project size
+  7.8M Jun 12 15:23 core
+** reitit/ring etc smaller?!
+ naomarik naomarik 6.7M Jun 12 16:35 core
+* Benchmarking
+
+** clj executed ring dev (reloadable) handler with jetty
+➜  wrk git:(master) ✗ ./wrk http://localhost:6500
+Running 10s test @ http://localhost:6500
+  2 threads and 10 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   649.65us  587.37us   7.41ms   83.12%
+    Req/Sec     8.97k   693.23     9.95k    86.63%
+  180288 requests in 10.10s, 25.27MB read
+Requests/sec:  17850.26
+
+Transfer/sec:      2.50MB
+
+** clj ring app handler with jetty
+➜  wrk git:(master) ✗ ./wrk http://localhost:6500
+Running 10s test @ http://localhost:6500
+  2 threads and 10 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   212.53us  619.49us  17.02ms   97.17%
+    Req/Sec    37.02k     5.32k   42.66k    92.50%
+  736782 requests in 10.00s, 103.29MB read
+Requests/sec:  73647.75
+Transfer/sec:     10.32MB
+
+** Compiled binary graalvm with jetty
+
+   ➜  wrk git:(master) ✗ ./wrk http://localhost:6500
+   Running 10s test @ http://localhost:6500
+   2 threads and 10 connections
+   Thread Stats   Avg      Stdev     Max   +/- Stdev
+   Latency   215.75us  627.17us  18.18ms   97.03%
+   Req/Sec    36.55k     6.70k   43.41k    90.59%
+   734590 requests in 10.10s, 102.98MB read
+   Requests/sec:  72737.12
+   Transfer/sec:     10.20MB
+
+
+** compiled graalvm another command
+
+➜  wrk git:(master) ✗ ./wrk -t2 -c16 -d10s http://localhost:6500
+Running 10s test @ http://localhost:6500
+  2 threads and 16 connections
+  Thread Stats   Avg      Stdev     Max   +/- Stdev
+    Latency   272.86us  704.61us  15.42ms   95.78%
+    Req/Sec    51.03k     3.70k   60.67k    80.60%
+  1020325 requests in 10.10s, 143.04MB read
+Requests/sec: 101017.98
+Transfer/sec:     14.16MB
+* SaaS idea:
+** Webapp hosted somewhere
+** tufte server exposes route for data
+** webapp consumes that data, shows info
