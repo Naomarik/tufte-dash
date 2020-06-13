@@ -1,0 +1,6 @@
+{:main tuftedash.main
+ ;; :asset-path "assets/cljs-out/dev"
+ ;; :asset-path "assets"
+ ;; :output-dir "jsbuild"
+ :output-to "resources/main.js"
+ }

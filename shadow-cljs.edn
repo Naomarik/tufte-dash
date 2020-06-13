@@ -1,0 +1,7 @@
+;; shadow-cljs configuration
+{:source-paths ["cljs-src"]
+ :deps true
+ :builds {:dev {:target :browser
+                :modules {:main {:init-fn tuftedash.main/init}}
+                :asset-path "/assets"
+                :output-dir "shadowcljs/"}}}

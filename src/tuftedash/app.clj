@@ -36,17 +36,21 @@
      (str request)]
     (include-js "/assets/test.js")
     ;; (include-js (slurp (io/resource "test.js")))
-    [:h1 "TeST"])))
+    [:h1 "TeS"])))
 
 (defn two [request]
+  (def ahedkrj request)
   (response/response
    (html
+    ;; (include-js "/assets/main.js")
     [:pre
      (str request)]
-    (include-js "/assets/test.js")
-    [:div
-     (str (slurp (io/resource "test.js")))]
-    [:h1 "twoST"])))
+    [:h1 "ttesST"]
+
+    ;; (include-js "/assets/cljs-out/dev-main.js")
+    (include-js "/assets/main.js")
+    )))
+;; (slurp (io/resource "cljs-out/dev-main.js"))
 
 (defmethod response/resource-data :resource
   [^java.net.URL url]
@@ -60,6 +64,8 @@
     [
      ["/" {:get testz}]
      ["/two" {:get two}]
+     ;; ["/*" (ring/create-resource-handler {:root ""})]
+     ["/favicon.ico" (ring/create-resource-handler {:root ""})]
      ["/assets/*" (ring/create-resource-handler {:root ""})]
      ]
     ;; router data effecting all routes

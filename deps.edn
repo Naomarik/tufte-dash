@@ -1,12 +1,31 @@
-{:aliases {:dev {:extra-deps {cider/cider-nrepl {:mvn/version "0.25.2"}}
-                 :extra-paths ["env/dev"]
-                 :main-opts ["-m" "main"]}
+{:aliases {:fig {:extra-deps {com.bhauman/figwheel-main {:mvn/version "0.2.8"}}
+                 :extra-paths ["target" "cljs-src"]}
 
-           :cider-clj {:extra-deps {cider/cider-nrepl {:mvn/version "0.25.2"}}
-                       :main-opts ["-m" "nrepl.cmdline" "--middleware" "[cider.nrepl/cider-middleware]"]}
+           :build {:main-opts ["-m" "figwheel.main" "-b" "dev" "-r"]}
+           :min   {:main-opts ["-m" "figwheel.main" "-O" "advanced" "-bo" "prod"]}
 
-           :cider-cljs {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.339"}
-                                     cider/cider-nrepl {:mvn/version "0.22.4"}
+           :shadow-cljs
+           {:extra-deps {thheller/shadow-cljs {:mvn/version "2.10.6"}
+                         refactor-nrepl {:mvn/version "2.5.0-SNAPSHOT"}
+                         cider/cider-nrepl {:mvn/version "0.25.2"}}
+            :extra-paths ["env/dev" "cljs-src"]
+            :main-opts ["-m" "shadow.cljs.devtools.cli"]}
+
+           :dev {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.773"}
+                              refactor-nrepl {:mvn/version "2.5.0-SNAPSHOT"}
+                              thheller/shadow-cljs {:mvn/version "2.10.6"}
+                              com.bhauman/figwheel-main {:mvn/version "0.2.8"}
+                              cider/cider-nrepl {:mvn/version "0.25.2"}}
+                 :extra-paths ["env/dev" "cljs-src"]
+                 ;; :main-opts ["-m" "main"]
+                 }
+
+           :cider-clj {:extra-deps {cider/cider-nrepl {:mvn/version "0.25.2"}
+                                    refactor-nrepl {:mvn/version "2.5.0-SNAPSHOT"}}
+                       :main-opts ["-m" "nrepl.cmdline" "--middleware" "[refactor-nrepl.middleware/wrap-refactor,cider.nrepl/cider-middleware]"]}
+
+           :cider-cljs {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.773"}
+                                     cider/cider-nrepl {:mvn/version "0.25.2"}
                                      cider/piggieback {:mvn/version "0.5.0"}}
                         :main-opts ["-m" "nrepl.cmdline" "--middleware"
                                     "[cider.nrepl/cider-middleware,cider.piggieback/wrap-cljs-repl]"]}
@@ -19,7 +38,7 @@
                         ;; "--no-fallback"
                         ;; "--allow-incomplete-classpath"
                         ;; "--no-server"
-                        "-H:IncludeResources=.*"
+                        "-H:IncludeResources=main.js"
                         ;; optional native image name override
                         "-H:Name=core"]
             :jvm-opts ["-Dclojure.compiler.direct-linking=true"]
@@ -29,13 +48,13 @@
              {:git/url "https://github.com/taylorwood/clj.native-image.git"
               :sha "7708e7fd4572459c81f6a6b8e44c96f41cdd92d4"}}}}
 
- :paths ["src" "resources"]
+ :paths ["src" "resources" "shadowcljs" ]
 
  :deps {org.clojure/tools.cli {:mvn/version "1.0.194"}
-        nrepl {:mvn/version "0.7.0"}
+        ;; thheller/shadow-cljs {:mvn/version "2.10.6"}
+        ;; nrepl {:mvn/version "0.7.0"}
         mount {:mvn/version "0.1.16"}
         hiccup {:mvn/version "1.0.5"}
         metosin/reitit {:mvn/version "0.5.2"}
-        ;; cider/cider-nrepl {:mvn/version "0.25.2"}
         org.clojure/clojure {:mvn/version "1.10.2-alpha1"},
         ring {:mvn/version "1.8.1"}}}
