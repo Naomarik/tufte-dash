@@ -1,7 +1,7 @@
 ^{:css-dirs ["resources/public/css"]
   :auto-testing true}
 {:main tuftedash.main
- :asset-path "assets/cljs-out/dev"
+ :asset-path "assets/dev"
  ;; :asset-path "assets"
  ;; :output-dir "assets"
  }

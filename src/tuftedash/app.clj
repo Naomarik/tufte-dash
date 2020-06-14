@@ -2,6 +2,7 @@
   (:require
    [reitit.ring :as ring]
    [ring.util.response :as response]
+   [env :refer [env]]
    [reitit.coercion.spec]
    [reitit.ring.coercion :as rrc]
    [reitit.core :as r]
@@ -29,51 +30,40 @@
 ;;                                         ;        :path-params {:id 2},
 ;;                                         ;        :path "/api/orders/2"}
 
-(defn testz [request]
+(defn index [request]
   (response/response
    (html
     [:pre
      (str request)]
-    (include-js "/assets/test.js")
-    ;; (include-js (slurp (io/resource "test.js")))
-    [:h1 "TeS"])))
+    [:h1 "Index"]
+    [:div#app
+     [:h1 "App element"]]
+    (if (= :dev (:build env))
+      (include-js "/assets/dev-main.js")
+      (include-js "/assets/main.js")))))
 
-(defn two [request]
-  (def ahedkrj request)
-  (response/response
-   (html
-    ;; (include-js "/assets/main.js")
-    [:pre
-     (str request)]
-    [:h1 "ttesST"]
+;; (io/resource "dev-main.js")
 
-    ;; (include-js "/assets/cljs-out/dev-main.js")
-    (include-js "/assets/main.js")
-    )))
-;; (slurp (io/resource "cljs-out/dev-main.js"))
+(defn hello [req]
+  (->
+   (response/response "Hello")))
+
+(def handler
+  (ring/ring-handler
+   (ring/router
+    [
+     ["/" {:get index}]
+     ["/hello" {:get hello}]
+     ;; ["/*" (ring/create-resource-handler {:root ""})]
+     ["/favicon.ico" (ring/create-resource-handler {:root ""})]
+     ["/assets/*" (ring/create-resource-handler {:root ""})]]
+    {:data {:coercion reitit.coercion.spec/coercion
+            :middleware [rrc/coerce-exceptions-middleware
+                         rrc/coerce-request-middleware
+                         rrc/coerce-response-middleware]}})))
 
 (defmethod response/resource-data :resource
   [^java.net.URL url]
   (let [conn (.openConnection url)]
     {:content        (.getInputStream conn)
      :content-length (let [len (.getContentLength conn)] (if-not (pos? len) len))}))
-
-(def handler
-  (ring/ring-handler
-   (ring/router
-    [
-     ["/" {:get testz}]
-     ["/two" {:get two}]
-     ;; ["/*" (ring/create-resource-handler {:root ""})]
-     ["/favicon.ico" (ring/create-resource-handler {:root ""})]
-     ["/assets/*" (ring/create-resource-handler {:root ""})]
-     ]
-    ;; router data effecting all routes
-    {:data {:coercion reitit.coercion.spec/coercion
-            :middleware [rrc/coerce-exceptions-middleware
-                         rrc/coerce-request-middleware
-                         rrc/coerce-response-middleware]}})))
-
-
-;; (def handler hello)
-

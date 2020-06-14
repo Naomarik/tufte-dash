@@ -1,24 +1,21 @@
-{:aliases {:fig {:extra-deps {com.bhauman/figwheel-main {:mvn/version "0.2.8"}}
+{:aliases {:fig {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.773"}
+                              com.bhauman/figwheel-main {:mvn/version "0.2.8"}
+                              cljs-ajax {:mvn/version "0.8.0"}
+                              re-frame {:mvn/version "1.0.0-rc2"}
+                              reagent {:mvn/version "1.0.0-alpha2"}}
                  :extra-paths ["target" "cljs-src"]}
 
            :build {:main-opts ["-m" "figwheel.main" "-b" "dev" "-r"]}
            :min   {:main-opts ["-m" "figwheel.main" "-O" "advanced" "-bo" "prod"]}
 
            :shadow-cljs
-           {:extra-deps {thheller/shadow-cljs {:mvn/version "2.10.6"}
-                         refactor-nrepl {:mvn/version "2.5.0-SNAPSHOT"}
-                         cider/cider-nrepl {:mvn/version "0.25.2"}}
+           {:extra-deps {thheller/shadow-cljs {:mvn/version "2.10.6"}}
             :extra-paths ["env/dev" "cljs-src"]
             :main-opts ["-m" "shadow.cljs.devtools.cli"]}
 
-           :dev {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.773"}
-                              refactor-nrepl {:mvn/version "2.5.0-SNAPSHOT"}
-                              thheller/shadow-cljs {:mvn/version "2.10.6"}
-                              com.bhauman/figwheel-main {:mvn/version "0.2.8"}
+           :dev {:extra-deps {refactor-nrepl {:mvn/version "2.5.0-SNAPSHOT"}
                               cider/cider-nrepl {:mvn/version "0.25.2"}}
-                 :extra-paths ["env/dev" "cljs-src"]
-                 ;; :main-opts ["-m" "main"]
-                 }
+                 :extra-paths ["env/dev" "cljs-src" "target/public/cljs-out"]}
 
            :cider-clj {:extra-deps {cider/cider-nrepl {:mvn/version "0.25.2"}
                                     refactor-nrepl {:mvn/version "2.5.0-SNAPSHOT"}}
@@ -53,6 +50,8 @@
  :deps {org.clojure/tools.cli {:mvn/version "1.0.194"}
         ;; thheller/shadow-cljs {:mvn/version "2.10.6"}
         ;; nrepl {:mvn/version "0.7.0"}
+        clj-http {:mvn/version "3.10.1"}
+        com.taoensso/nippy {:mvn/version "2.15.0-RC1"}
         mount {:mvn/version "0.1.16"}
         hiccup {:mvn/version "1.0.5"}
         metosin/reitit {:mvn/version "0.5.2"}
