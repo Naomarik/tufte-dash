@@ -56,3 +56,19 @@ Transfer/sec:     14.16MB
 ** Webapp hosted somewhere
 ** tufte server exposes route for data
 ** webapp consumes that data, shows info
+* If having issues about class init problems
+add 
+"-H:+TraceClassInitialization"
+"--debug-attach" to the native image
+
+
+jdb -attach localhost:8000
+
+
+Set a breakpoint
+
+`stop in org.apache.http.nio.conn.ssl.SSLIOSessionStrategy.<init>`
+`stop in org.apache.http.nio.conn.ssl.SSLIOSessionStrategy.<clinit>`
+
+Then `cont` to run
+and `where` to look at stack trace

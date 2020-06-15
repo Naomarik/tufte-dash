@@ -16,19 +16,12 @@
 
 (def all-requests {})
 
-;; (clojure.tools.reader.edn/read-string (:body (client/get "http://localhost/perf-report")))
-
-
-(time (client/get "http://localhost/listings/17592187574877"))
 (defn req [req]
-  (let [res (client/get "http://localhost/listings/17592187574877")
-        time (with-out-str (time (client/get "http://localhost/listings/17592187574877")))]
+  (let [res (client/get "http://localhost/listings/17592187574877")]
     (response/response
      (with-out-str
-       (clojure.pprint/pprint {
-                               :time time
-                               :body (:body res)
-                               })))))
+       (clojure.pprint/pprint {:time (:request-time res)
+                               :body (:body res)})))))
 
 
 ;; (clojure.tools.reader.edn/read-string (:body (client/get "http://localhost/listings/17592187574877")))
