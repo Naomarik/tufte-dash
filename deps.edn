@@ -1,6 +1,7 @@
 {:aliases {:fig {:extra-deps {org.clojure/clojurescript {:mvn/version "1.10.773"}
                               com.bhauman/figwheel-main {:mvn/version "0.2.8"}
                               cljs-ajax {:mvn/version "0.8.0"}
+                              com.andrewmcveigh/cljs-time {:mvn/version "0.5.2"}
                               re-frame {:mvn/version "1.0.0-rc2"}
                               reagent {:mvn/version "1.0.0-alpha2"}}
                  :extra-paths ["target" "cljs-src"]}
@@ -32,8 +33,13 @@
                         "--initialize-at-build-time"
                         "--report-unsupported-elements-at-runtime"
                         "-H:+ReportExceptionStackTraces"
+                        "-H:EnableURLProtocols=http"
                         ;; "--no-fallback"
                         ;; "--allow-incomplete-classpath"
+                        ;; "--initialize-at-run-time=javax.net.ssl.SSLContext"
+                        ;; javax.net.ssl.SSLContext
+
+                        ;; "--initialize-at-run-time=java.rmi.server.ObjID,sun.rmi.transport.ObjectTable,sun.rmi.transport.Transport,sun.rmi.transport.tcp.TCPEndpoint,sun.rmi.registry.RegistryImpl,sun.rmi.transport.DGCImpl,sun.rmi.transport.DGCClient"
                         ;; "--no-server"
                         "-H:IncludeResources=main.js"
                         ;; optional native image name override
@@ -50,10 +56,15 @@
  :deps {org.clojure/tools.cli {:mvn/version "1.0.194"}
         ;; thheller/shadow-cljs {:mvn/version "2.10.6"}
         ;; nrepl {:mvn/version "0.7.0"}
-        clj-http {:mvn/version "3.10.1"}
+        clj-time {:mvn/version "0.15.2"}
+        ;; clj-http {:mvn/version "3.10.1"}
+
+        clj-http-lite {:mvn/version "0.3.0"}
         com.taoensso/nippy {:mvn/version "2.15.0-RC1"}
         mount {:mvn/version "0.1.16"}
         hiccup {:mvn/version "1.0.5"}
+        org.clojure/core.async {:mvn/version "1.2.603"}
+        com.taoensso/sente {:mvn/version "1.14.0-RC2"}
         metosin/reitit {:mvn/version "0.5.2"}
         org.clojure/clojure {:mvn/version "1.10.2-alpha1"},
         ring {:mvn/version "1.8.1"}}}

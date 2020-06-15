@@ -1,6 +1,7 @@
 (ns ^:figwheel-hooks tuftedash.main
   (:require
    [goog.dom :as gdom]
+   [ajax.core :refer [GET POST]]
    [reagent.dom :as rd]
    [reagent.core :as reagent :refer [atom]]))
 
@@ -16,6 +17,14 @@
 (defn hello-world []
   [:div
    [:h1 (:text @app-state)]
+   [:pre (:data @app-state)]
+   [:button {:on-click
+             (fn []
+               (GET "/req"
+                   {:handler (fn [response]
+                               (swap! app-state assoc :data response)
+                               )}))}
+    "GET it"]
    [:h3 "Hello"]])
 
 (defn mount [el]
@@ -32,3 +41,6 @@
 ;; specify reload hook with ^;after-load metadata
 (defn ^:after-load on-reload []
   (mount-app-element))
+
+
+
