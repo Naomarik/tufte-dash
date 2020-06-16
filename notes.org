@@ -57,6 +57,7 @@ Transfer/sec:     14.16MB
 ** tufte server exposes route for data
 ** webapp consumes that data, shows info
 * If having issues about class init problems
+https://medium.com/graalvm/updates-on-class-initialization-in-graalvm-native-image-generation-c61faca461f7
 add 
 "-H:+TraceClassInitialization"
 "--debug-attach" to the native image
@@ -72,3 +73,106 @@ Set a breakpoint
 
 Then `cont` to run
 and `where` to look at stack trace
+* Working with tufte deftypes
+
+
+@(tufte/merge-pstats (PStats. (.-pd (:request eah))
+                              (.-t1 (:request eah))
+                              (.-tspans (:request eah))
+                              (delay @(:request eah)))
+
+                     (PStats. (.-pd (:request ah))
+                              (.-t1 (:request ah))
+                              (.-tspans (:request ah))
+                              (delay @(:request ah))))
+
+
+
+(defn timespans->map [timespan]
+  {:t0 (.-t0 timespan)
+   :t1 (.-t1 timespan)}
+  )
+
+
+
+(nippy/thaw (nippy/freeze (.-pstate_ (.-pd (:request ah)))))
+
+
+;; (type (.-pstate_ (.-pd (:request ah))))
+;; (.-acc (.-pstate_ (.-pd (:request ah))))
+
+
+(nippy/extend-thaw :tufte/pState
+                   [s]
+                   (let [{:keys [acc id-times id-stats]} (clojure.edn/read-string (.readUTF s))]
+                     (PState. acc id-times id-stats)))
+
+(nippy/extend-freeze PState :tufte/pState
+                     [x data-output]
+                     (.writeUTF data-output
+                                (str {:acc (.-acc x)
+                                      :id-times (.-id-times x)
+                                      :id-stats (.-id-stats x)})))
+
+(nippy/extend-thaw :tufte/pStats
+                   [s]
+                   (let [{:keys [pd t1 tspans]} (clojure.edn/read-string (.readUTF s))]
+                     (PStats. pd t1 tspans (delay))))
+
+(nippy/extend-freeze PStats :tufte/pStats
+                     [x data-output]
+                     (.writeUTF data-output
+                                (str {:pd (.-pd x)
+                                      :t1 (.-t1 x)
+                                      :tspans (.-tspans x)})))
+
+(nippy/extend-thaw :tufte/pData
+                   [s]
+                   (.readUTF s)
+                   (let [{:keys [nmax t0 pstate]} (clojure.edn/read-string (.readUTF s))]
+                     (PData. nmax t0 pstate)))
+
+(nippy/extend-freeze PData :tufte/pData
+                     [x data-output]
+                     (.writeUTF data-output
+                                (str {:nmax (.-nmax x)
+                                      :t0 (.-t0 x)
+                                      :pstate (.-pstate_ x)})))
+
+(nippy/thaw (nippy/freeze (.-pd (:request ah))))
+
+(nippy/thaw (nippy/freeze
+             (:request ah)
+  #_(PStats. (.-pd (:request ah))
+             (.-t1 (:request ah))
+             (.-tspans (:request ah))
+             (delay {}))))
+
+((defn pstats->map [pstats]
+   (let [
+         pd (.-pd pstats)
+         t1 (.-t1 pstats)
+         tspans (.-tspans pstats)
+
+         nmax (.-nmax pd)
+         t0 (.-t0 pd)
+         pstate (.-pstate_ pd)
+
+         acc (.-acc pstate)
+         id-times (.-id-times pstate)
+         id-stats (.-id-stats pstate)
+         ]
+
+     {:pstats {:pd {:nmax nmax
+                    :t0 t0
+                    :pstate {:acc acc
+                             :id-times id-times
+                             :id-stats id-stats}
+                    }
+               :t1 t1
+               :tspans (map timespans->map tspans)
+               }}
+
+     )) (:request ah))
+
+(.-pstate_ (.-pd (:request ah)))

@@ -1,5 +1,6 @@
 (ns ^:figwheel-hooks tuftedash.main
   (:require
+   [cljs.tools.reader.edn :as edn]
    [goog.dom :as gdom]
    [ajax.core :refer [GET POST]]
    [reagent.dom :as rd]
@@ -17,7 +18,7 @@
 (defn hello-world []
   [:div
    [:h1 (:text @app-state)]
-   [:pre (:data @app-state)]
+   [:pre (edn/read-string (:data @app-state))]
    [:button {:on-click
              (fn []
                (GET "/req"

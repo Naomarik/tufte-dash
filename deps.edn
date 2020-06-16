@@ -9,6 +9,9 @@
            :build {:main-opts ["-m" "figwheel.main" "-b" "dev" "-r"]}
            :min   {:main-opts ["-m" "figwheel.main" "-O" "advanced" "-bo" "prod"]}
 
+           :graph {:deps {org.clojure/tools.deps.graph {:mvn/version "0.2.30"}}
+                   :main-opts ["-m" "clojure.tools.deps.graph"]}
+
            :shadow-cljs
            {:extra-deps {thheller/shadow-cljs {:mvn/version "2.10.6"}}
             :extra-paths ["env/dev" "cljs-src"]
@@ -55,10 +58,14 @@
 
  :deps {org.clojure/tools.cli {:mvn/version "1.0.194"}
         ;; thheller/shadow-cljs {:mvn/version "2.10.6"}
+        ;; org.immutant/immutant {:mvn/version "2.1.10"}
+
         ;; nrepl {:mvn/version "0.7.0"}
         clj-time {:mvn/version "0.15.2"}
         ;; clj-http {:mvn/version "3.10.2-OMAR1"}
         clj-http-lite {:mvn/version "0.3.0"}
+
+        com.taoensso/tufte {:mvn/version "2.1.0"}
         com.taoensso/nippy {:mvn/version "2.15.0-RC1"}
         mount {:mvn/version "0.1.16"}
         hiccup {:mvn/version "1.0.5"}
