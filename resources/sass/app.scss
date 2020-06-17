@@ -1,0 +1,53 @@
+body {
+  background: #3b4450;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  padding: 40px 50px;
+
+  .container {
+    /* max-width: 80vw; */
+    margin: 0 auto;
+  }
+
+  ul {
+    list-style: none;
+    padding: 0px;
+    padding-left: 20px;
+  }
+
+  li {
+    margin-bottom: 4px;
+  }
+
+  .date {
+    margin: 0 10px;
+  }
+
+  .flex {
+    max-width: 100%;
+    display: flex;
+    overflow: auto;
+  }
+
+  #range {
+    max-height: 100vh;
+    overflow: auto;
+    padding-right: 20px;
+  }
+
+  #report {
+    margin-left: 30px;
+  }
+
+  button.active {
+    color: blue;
+  }
+
+  li {
+    width: 100%;
+  }
+
+  .bold {
+    font-weight: 600;
+  }
+}

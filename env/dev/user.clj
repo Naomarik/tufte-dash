@@ -12,4 +12,4 @@
                                                              cider.nrepl/cider-middleware))))
   (Thread. (core/-main args)))
 
-(future (-main))
+  (future (-main))

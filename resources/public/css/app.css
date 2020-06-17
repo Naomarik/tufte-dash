@@ -1,0 +1,45 @@
+body {
+  background: #3b4450;
+  font-family: Arial, Helvetica, sans-serif;
+  color: white;
+  padding: 40px 50px;
+}
+body .container {
+  /* max-width: 80vw; */
+  margin: 0 auto;
+}
+body ul {
+  list-style: none;
+  padding: 0px;
+  padding-left: 20px;
+}
+body li {
+  margin-bottom: 4px;
+}
+body .date {
+  margin: 0 10px;
+}
+body .flex {
+  max-width: 100%;
+  display: flex;
+  overflow: auto;
+}
+body #range {
+  max-height: 100vh;
+  overflow: auto;
+  padding-right: 20px;
+}
+body #report {
+  margin-left: 30px;
+}
+body button.active {
+  color: blue;
+}
+body li {
+  width: 100%;
+}
+body .bold {
+  font-weight: 600;
+}
+
+/*# sourceMappingURL=app.css.map */

@@ -35,18 +35,24 @@
            {:main-opts ["-m clj.native-image tuftedash.core"
 
                         "--initialize-at-build-time"
-                        ;; "--initialize-at-run-time="
                         "--report-unsupported-elements-at-runtime"
-                        "-H:+ReportExceptionStackTraces"
-                        ;; "--debug-attach" ; use jdb -attach localhost:8000
-                        "-H:+TraceClassInitialization"
                         "-H:EnableURLProtocols=http,https"
+                        "-H:IncludeResources=main.js"
+                        "-H:Name=core" ; output file
+
+                        ;;;; May need later
+                        ;; "--initialize-at-run-time="
+
+                        ;;;; Helpful for debugging
+
+                        ;; "-H:+ReportExceptionStackTraces"
+                        ;; "-H:+TraceClassInitialization"
+                        ;; "--debug-attach" ; use jdb -attach localhost:8000
+
                         ;; "--enable-all-security-services"
                         ;; "--no-fallback"
                         ;; "--allow-incomplete-classpath"
-                        "-H:IncludeResources=main.js"
-                        ;; optional native image name override
-                        "-H:Name=core"]
+                        ]
             :jvm-opts ["-Dclojure.compiler.direct-linking=true"]
             :extra-paths ["env/prod" "resources"]
             :extra-deps
@@ -54,17 +60,15 @@
              {:git/url "https://github.com/taylorwood/clj.native-image.git"
               :sha "7708e7fd4572459c81f6a6b8e44c96f41cdd92d4"}}}}
 
- :paths ["src" "resources" "shadowcljs" ]
+ :paths ["src" "cljc-src" "resources" "shadowcljs" ]
 
  :deps {org.clojure/tools.cli {:mvn/version "1.0.194"}
         ;; thheller/shadow-cljs {:mvn/version "2.10.6"}
         ;; org.immutant/immutant {:mvn/version "2.1.10"}
-
         ;; nrepl {:mvn/version "0.7.0"}
         clj-time {:mvn/version "0.15.2"}
         ;; clj-http {:mvn/version "3.10.2-OMAR1"}
-        clj-http-lite {:mvn/version "0.3.0"}
-
+        org.martinklepsch/clj-http-lite {:mvn/version "0.4.3"}
         com.taoensso/tufte {:mvn/version "2.1.0"}
         com.taoensso/nippy {:mvn/version "2.15.0-RC1"}
         mount {:mvn/version "0.1.16"}

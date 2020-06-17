@@ -1,0 +1,7 @@
+* Show and set time range for captured pstats
+* Show clickable tags to sort pstats
+* Add sente for real time
+* Telegram Notifier
+** basic ping check
+* Make UX look good
+

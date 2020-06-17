@@ -1,6 +1,6 @@
 (ns tuftedash.core
   (:require
-   [tuftedash.app :as app]
+   [tuftedash.handler :as handler]
    [mount.core :refer [defstate] :as mount]
    [env :refer [env]]
    [clojure.tools.cli :refer [parse-opts]]
@@ -29,10 +29,14 @@
     (if (= build :dev)
       (do
         (require '[ring.middleware.reload])
-        (run-jetty ((resolve 'ring.middleware.reload/wrap-reload) #'app/handler) {:port port}))
-      (run-jetty app/handler {:port port})))
+        (run-jetty ((resolve 'ring.middleware.reload/wrap-reload) #'handler/handler) {:port port}))
+      (run-jetty handler/handler {:port port})))
   :stop
-  (.stop http-server))
+  (.stop http-server)) ;; doesn't work
+
+(comment
+  (mount/stop (var http-server))
+  (mount/start (var http-server)))
 
 (defn -main [& args]
   (let [parsed (parse-opts args cli-options)
