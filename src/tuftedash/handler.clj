@@ -1,52 +1,20 @@
 (ns tuftedash.handler
-  (:require
-   [tuftedash.app :as app]
-   [muuntaja.core :as m]
-   [taoensso.encore :as encore]
-   [malli.util :as mu]
-   [reitit.ring :as ring]
-   [reitit.ring.middleware.muuntaja :as muuntaja]
-   [reitit.coercion :as coercion]
-   [reitit.ring.middleware.parameters :refer [parameters-middleware]]
-   [reitit.coercion.malli :as malli-coercion]
-   [tuftedash.utils :as utils]
-   [ring.util.response :as response]
-   [env :refer [env]]
-   ;; [clj-http.client :as client]
-   [clj-http.lite.client :as client]
-   [reitit.coercion.spec]
-   [reitit.ring.coercion :as rrc]
-   [reitit.core :as r]
-   [clojure.tools.reader.edn :as edn]
-   [mount.core :as mount])
-  (:use hiccup.core
-        hiccup.page
-        hiccup.form))
-
-;; (clojure.tools.reader.edn/read-string (:body (client/get "http://localhost/listings/17592187574877")))
-;; (def router
-;;   (r/router
-;;    [["/api/ping" ::ping]
-;;     ["/api/orders/:id" ::order]]))
-
-;; (r/match-by-path router "/api/ping")
-;;                                         ; #Match{:template "/api/ping"
-;;                                         ;        :data {:name ::ping}
-;;                                         ;        :result nil
-;;                                         ;        :path-params {}
-;;                                         ;        :path "/api/ping"}
-
-;; (r/match-by-name router ::order {:id 2})
-;;                                         ; #Match{:template "/api/orders/:id",
-;;                                         ;        :data {:name ::order},
-;;                                         ;        :result nil,
-;;                                         ;        :path-params {:id 2},
-;;                                         ;        :path "/api/orders/2"}
-
-
+  (:require [clojure.tools.reader.edn :as edn]
+            [env :refer [env]]
+            [hiccup.core :refer :all]
+            [hiccup.page :refer :all]
+            [malli.util :as mu]
+            [muuntaja.core :as m]
+            [reitit.coercion.malli :as malli-coercion]
+            [reitit.ring :as ring]
+            [reitit.ring.coercion :as rrc]
+            [reitit.ring.middleware.muuntaja :as muuntaja]
+            [reitit.ring.middleware.parameters :refer [parameters-middleware]]
+            [ring.util.response :as response]
+            [tuftedash.app :as app]))
 
 (defn report-meta [req]
-  (response/response (str (app/meta))))
+  (response/response (str (app/report-meta))))
 
 (defn report [req]
   (let [{{{:keys [start-uuid end-uuid tag]} :query} :parameters} req]
@@ -58,11 +26,9 @@
   (response/response
    (html
     [:head
-     (include-css "/assets/public/css/app.css")]
-    #_[:pre
-     (str request)]
-    ;; [:h1 "Index"]
-    ;; [:h1 "PStats Count: " (count @reports)]
+     (if (= :dev (:build env))
+       (include-css "/assets/public/css/app.css")
+       (include-css "/assets/app.css"))]
     [:div#app
      [:h1 "Loading..."]]
     (if (= :dev (:build env))
@@ -71,11 +37,6 @@
 
 (defn hello [req]
   (response/response "Hello"))
-;; http://recharts.org/en-US/api/ComposedChart
-
-;; (defn match-by-path-and-coerce! [path]
-;;   (if-let [match (r/match-by-path router path)]
-;;     (assoc match :parameters (coercion/coerce! match))))
 
 (def handler
   (ring/ring-handler
@@ -113,12 +74,10 @@
               ;; malli options
               :options nil})
             :middleware [
-
                          parameters-middleware
                          muuntaja/format-negotiate-middleware
                          muuntaja/format-response-middleware
                          muuntaja/format-request-middleware
-
 
                          rrc/coerce-exceptions-middleware
                          rrc/coerce-response-middleware

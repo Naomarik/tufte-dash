@@ -1,10 +1,10 @@
 (ns tuftedash.core
-  (:require
-   [tuftedash.handler :as handler]
-   [mount.core :refer [defstate] :as mount]
-   [env :refer [env]]
-   [clojure.tools.cli :refer [parse-opts]]
-   [ring.adapter.jetty :refer [run-jetty]])
+  (:require [clojure.tools.cli :refer [parse-opts]]
+            [env :refer [env]]
+            [mount.core :as mount :refer [defstate]]
+            [ring.adapter.jetty :refer [run-jetty]]
+            [tuftedash.app :refer [*url load-data]]
+            [tuftedash.handler :as handler])
   (:gen-class))
 
 (def cli-options
@@ -14,6 +14,13 @@
     :parse-fn #(Integer/parseInt %)
     :validate [#(< 0 % 0x10000) "Must be a number between 0 and 65536"]]
    ;; A non-idempotent option (:default is applied first)
+   #_["-f" "--file FILE" "FILE"
+    :id :file
+    :default "reports.nippy"]
+   ["-u" "--url URL" "URL"
+    :id :url
+    ;; :default "http://localhost/perf-report"]
+    :default "http://naomarik.dlinkddns.com:3001/perf-report"]
    ["-v" nil "Verbosity level"
     :id :verbosity
     :default 0
@@ -40,6 +47,10 @@
 
 (defn -main [& args]
   (let [parsed (parse-opts args cli-options)
-        {{:keys [port]} :options} parsed]
+        {{:keys [port url]} :options} parsed]
 
+    (load-data)
+
+    (when url
+      (reset! *url url))
     (mount/start)))

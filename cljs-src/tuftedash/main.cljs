@@ -7,6 +7,9 @@
    [reagent.dom :as rd]
    [reagent.core :as r]))
 
+;; http://recharts.org/en-US/api/ComposedChart
+
+
 (defn init []
   (js/console.log "main"))
 
@@ -37,7 +40,6 @@
           :handler (fn [response]
                      (swap! app-state assoc :data response))})))
 
-
 (defn tags []
   (fn []
     (let [selected (:current-tag @app-state)]
@@ -49,11 +51,14 @@
                 [:li
                  {:on-click
                   (fn []
+                    (swap! app-state dissoc :start)
+                    (swap! app-state dissoc :end)
                     (swap! app-state assoc :current-tag t)
                     (fetch-report))
-                  :class (when (= selected t) "active")
-                  }
-                 (str t)])
+                  :class (when (= selected t) "active")}
+                 [:button
+                  {:class (when (= selected t) "active")}
+                  (str t)]])
               (map :tag (get-in @app-state [:meta :tags]))))])))
 
 (defn tag-ts []
@@ -85,7 +90,9 @@
                                   (do
                                     (when (> idx end-idx)
                                       (swap! app-state dissoc :end))
-                                    (swap! app-state assoc :start [idx [uuid ts]]))))
+                                    (swap! app-state assoc :start [idx [uuid ts]])
+                                    (fetch-report)
+                                    )))
                    :class (when (= idx start-idx) "active")}
                   "Start"]
                  (when
@@ -95,7 +102,9 @@
                     {:on-click #(do
                                   (if (= idx end-idx)
                                     (swap! app-state dissoc :end)
-                                    (swap! app-state assoc :end [idx [uuid ts]])))
+                                    (swap! app-state assoc :end [idx [uuid ts]]))
+
+                                  (fetch-report))
                      :class (when (= idx end-idx) "active")}
                     "End"])])
               sel-range)))]))
@@ -128,7 +137,10 @@
   [:div.container
    [:pre (:meta @app-state)]
    [:div.top
-    [:button {:on-click #(do
+    ;; [:label "URL "]
+    ;; [:input {:type "text"}]
+    ;; " "
+    #_[:button {:on-click #(do
                           (fetch-meta)
                           (fetch-report))} "Let's Get It"]]
    [:div.flex
@@ -137,6 +149,9 @@
      [tag-ts]]
     [:div.col
      [report]]]])
+
+(fetch-report)
+(fetch-meta)
 
 (defn mount [el]
   (rd/render [hello-world] el))

@@ -37,7 +37,7 @@
                         "--initialize-at-build-time"
                         "--report-unsupported-elements-at-runtime"
                         "-H:EnableURLProtocols=http,https"
-                        "-H:IncludeResources=main.js"
+                        "-H:IncludeResources=main.js|app.css"
                         "-H:Name=core" ; output file
 
                         ;;;; May need later

@@ -3,7 +3,7 @@
    [tuftedash.core :as core]))
 
 (defn -main [& args]
-  (println "LOADDED")
+  (println "Loaded Dev")
   ;; (spit ".nrepl-port" 39000)
   #_(nrepl-server/start-server :port 39000
                                :handler (apply nrepl-server/default-handler

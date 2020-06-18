@@ -17,6 +17,10 @@ body {
 
   li {
     margin-bottom: 4px;
+
+    button {
+      margin-right: 4px;
+    }
   }
 
   .date {
@@ -39,8 +43,36 @@ body {
     margin-left: 30px;
   }
 
+  button {
+    border: none;
+    margin: 0;
+    padding: 0;
+    width: auto;
+    overflow: visible;
+    cursor: pointer;
+
+    background: transparent;
+
+    /* inherit font & color from ancestor */
+    color: inherit;
+    font: inherit;
+
+    font-size: 14px;
+    line-height: 14px;
+
+    padding: 4px 8px;
+    border: 1px solid white;
+  }
+
+  input {
+    margin: 0 4px;
+    height: 26px;
+    width: 500px;
+  }
+
   button.active {
-    color: blue;
+    /* color: gray; */
+    opacity: 0.5;
   }
 
   li {

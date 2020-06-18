@@ -43,6 +43,7 @@ body button {
   overflow: visible;
   cursor: pointer;
   background: transparent;
+  /* inherit font & color from ancestor */
   color: inherit;
   font: inherit;
   font-size: 14px;

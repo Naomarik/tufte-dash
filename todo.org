@@ -4,4 +4,5 @@
 * Telegram Notifier
 ** basic ping check
 * Make UX look good
+* fix css dev/prod for non manual intervention
 

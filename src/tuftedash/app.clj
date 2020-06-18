@@ -1,17 +1,15 @@
 (ns tuftedash.app
-  (:require
-   [taoensso.encore :as encore]
-   [tuftedash.utils :as utils]
-   ;; [env :refer [env]]
-   ;; [clj-http.client :as client]
-   [clj-http.lite.client :as client]
-   [clojure.core.async :as async :refer [>! <! chan put! take! timeout close! go alts! go-loop]]
-   [taoensso.nippy :as nippy]
-   [taoensso.tufte :as tufte]
-   [tuftedash.impl.tufte :as tufte-impl]
-   [clojure.tools.reader.edn :as edn]
-   [clojure.java.io :as io]
-   [mount.core :as mount]))
+  (:require [clj-http.lite.client :as client]
+            [clojure.core.async :as async :refer [>! alts! chan go go-loop timeout]]
+            [clojure.java.io :as io]
+            [clojure.tools.reader.edn :as edn]
+            [mount.core :as mount]
+            [taoensso.encore :as encore]
+            [taoensso.nippy :as nippy]
+            [taoensso.tufte :as tufte]
+            [tuftedash.impl.tufte :as tufte-impl]
+            [tuftedash.utils :as utils]
+            [clojure.string :as str]))
 
 (defn take-while+
   [pred coll]
@@ -23,12 +21,12 @@
 
 (def hydrate-pstats tufte-impl/hydrate-pstats)
 
-(def file-name "reports.nippy")
-(defonce reports (atom
-                  (let [exists? (.exists (io/file file-name))]
-                    (if exists?
-                      (nippy/thaw-from-file file-name)
-                      {}))))
+(defonce reports (atom nil))
+
+(def *file-name (atom "reports.nippy"))
+
+(defn load-data []
+  (reset! reports (tufte-impl/load-data @*file-name)))
 
 (defn tags []
   (distinct (map :tag (vals @reports))))
@@ -52,13 +50,19 @@
   (count (time-range-for-tag
           (first (tags)))))
 
-(defn meta []
+(defn report-meta []
   {:tags (map
           (fn [t]
             {:tag t
              :range (time-range-for-tag t)})
           (tags))
    :total (count @reports)})
+
+;; (select-pstats haer)
+;; @reports
+;; (map @reports
+;;      (map first (->> (drop-while #(not=  (first %))
+;;                                  (time-range-for-tag {:version "0.8"})))))
 
 (defn select-pstats [opts]
   (let [{:keys [start-uuid end-uuid tag]} opts
@@ -68,14 +72,14 @@
               (map @reports
                    (map first (->> (drop-while #(not=
                                                  start-uuid
-                                                 (first %)) (time-range-for-tag {:version "0.8"}))
+                                                 (first %)) (time-range-for-tag tag))
                                    (take-while+ #(not=
                                                   end-uuid (first %))))))
 
               (and start-uuid tag)
               (map @reports
                    (map first (->> (drop-while #(not= start-uuid (first %))
-                                               (time-range-for-tag {:version "0.8"})))))
+                                               (time-range-for-tag tag)))))
 
               tag
               (reports-for-tag tag)
@@ -85,7 +89,6 @@
     ret))
 
 (defn render-report [opts]
-  (def aher opts)
   (let [selected-pstats (select-pstats opts)]
     {:total (count selected-pstats)
      :report (with-out-str
@@ -93,8 +96,11 @@
                 (tufte/format-grouped-pstats
                  (apply merge-with tufte/merge-pstats (map :grouped-pstats selected-pstats)))))}))
 
+;; Set this on cli
+(def *url (atom "http://localhost/perf-report"))
+
 (defn fetch-report []
-  (let [res (client/get "http://localhost/perf-report" {:query-params {:pass "omar"}})
+  (let [res (client/get @*url {:query-params {:pass "omar"}})
         {:keys [data uuid tag]} (edn/read-string (:body res))
         grouped-pstats (hydrate-pstats data)]
     (when-not (get @reports uuid)
@@ -114,7 +120,7 @@
           (do
             (try
               (fetch-report)
-              (nippy/freeze-to-file "reports.nippy" @reports)
+              (nippy/freeze-to-file @*file-name @reports)
               (catch Exception e
                 (println "Got error " e)))
             (println "Got it, report count" (count @reports))
@@ -131,3 +137,14 @@
 (comment
   (mount/stop (var fetch-loop))
   (mount/start (var fetch-loop)))
+
+;; (nippy/freeze-to-file "test" @reports)
+;; (nippy/thaw-from-file "test" @reports)
+
+(comment
+  (nippy/thaw (nippy/freeze @reports))
+  (def orig-data @reports)
+  (reset! reports (nippy/thaw (nippy/freeze @reports)))
+  (reset! reports orig-data)
+  (load-data)
+  (nippy/thaw (nippy/freeze @reports)))

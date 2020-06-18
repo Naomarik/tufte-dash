@@ -52,10 +52,6 @@ Running 10s test @ http://localhost:6500
   1020325 requests in 10.10s, 143.04MB read
 Requests/sec: 101017.98
 Transfer/sec:     14.16MB
-* SaaS idea:
-** Webapp hosted somewhere
-** tufte server exposes route for data
-** webapp consumes that data, shows info
 * If having issues about class init problems
 https://medium.com/graalvm/updates-on-class-initialization-in-graalvm-native-image-generation-c61faca461f7
 add 
